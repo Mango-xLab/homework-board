@@ -1,0 +1,26 @@
+[Unit]
+Description=作业小站 (homework-board)
+Documentation=file:///opt/homework-board/DEPLOY.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__USER__
+Group=__USER__
+WorkingDirectory=__DIR__
+Environment=NODE_ENV=production
+Environment=PORT=__PORT__
+Environment=HOST=127.0.0.1
+Environment=DATA_DIR=__DIR__/data
+ExecStart=__NODE__ __DIR__/server.js
+Restart=always
+RestartSec=3
+# 日志进 journalctl -u homework-board
+StandardOutput=journal
+StandardError=journal
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

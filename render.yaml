@@ -1,0 +1,25 @@
+# Render 一键部署配置（免费套餐够用）
+#
+# 用法：把整个 homework-board 文件夹传到 GitHub，在 Render 里选
+# "New → Blueprint"，指向这个仓库即可。部署时它会问你要下面两个
+# 环境变量的值（Upstash 的地址和密码），照 README 里的步骤申请。
+#
+# 注意：Render 免费实例重启后本地磁盘会清空，所以一定要配 Upstash，
+# 否则记录会丢。
+
+services:
+  - type: web
+    name: homework-board
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: UPSTASH_REDIS_REST_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_TOKEN
+        sync: false

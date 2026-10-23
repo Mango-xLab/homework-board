@@ -1,0 +1,24 @@
+# 作业小站 · Cloudflare Workers 部署配置
+#
+# 第一次用：
+#   1. npm i -g wrangler       （或直接用 npx wrangler）
+#   2. wrangler login
+#   3. wrangler kv namespace create HB_KV
+#      把输出里的 id 填到下面 <改成你的KV命名空间id>
+#   4. wrangler deploy
+#
+# 免费额度：每天 10 万次请求 + KV 读写各 10 万次，一家人用远远用不完。
+
+name = "homework-board"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# 静态文件直接由 Cloudflare 提供，不走 worker
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# 数据存在 KV 里（房间码 → 一家的数据）
+[[kv_namespaces]]
+binding = "HB_KV"
+id = "<改成你的KV命名空间id>"

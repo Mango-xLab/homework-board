@@ -1,0 +1,19 @@
+{
+  "name": "homework-board",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "作业小站 · 一年级小朋友的作业与每日任务共享网站",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node scripts/selftest.mjs && node scripts/deploytest.mjs && node scripts/workertest.mjs",
+    "test:api": "node scripts/apitest.mjs",
+    "test:browser": "node scripts/smoke.mjs",
+    "build:worker": "node scripts/build-worker.mjs",
+    "deploy:cloudflare": "npx wrangler deploy"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

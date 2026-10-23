@@ -1,0 +1,44 @@
+# 作业小站 · 1Panel 专用编排文件
+#
+# 用法：1Panel 面板 → 容器 → 编排 → 创建编排 → 编辑
+#       把下面「services:」开始的内容整段贴进去，编排名称填 homework-board，确认。
+#
+# 为什么这么写：
+#   * 直接用官方的 node:20-alpine 镜像，不需要在服务器上 build，粘贴即可用
+#   * 代码放在宿主机的 /opt/homework-board，容器只读挂进去 —— 改代码不用重建容器
+#   * 数据写在 /opt/homework-board/data，容器删了也不丢
+#   * 端口映射成 5199，前面用 1Panel 的「网站 → 反向代理」挂到域名 / HTTPS 上
+#
+# ⚠️ 贴之前先把代码传到 /opt/homework-board（1Panel → 文件 里新建目录再上传）
+
+services:
+  homework-board:
+    image: node:20-alpine
+    container_name: homework-board
+    restart: unless-stopped
+    working_dir: /app
+    command: ["node", "server.js"]
+    ports:
+      # 左边是宿主机端口。建议不要在防火墙/安全组里放行它，
+      # 外面统一走 1Panel 反向代理的 80 / 443 进来。
+      - "5199:5173"
+    volumes:
+      # 代码（宿主机绝对路径 : 容器内路径）
+      - /opt/homework-board:/app
+    environment:
+      PORT: "5173"
+      HOST: "0.0.0.0"
+      DATA_DIR: "/app/data"
+      NODE_ENV: "production"
+      # 房间管理口令【可选】。
+      # 不设的话：第一次进「家长 → 设置 → 🏠 房间」时会让你当场设一个，
+      #           之后只把 scrypt 哈希存进 /opt/homework-board/data/_admin.json，
+      #           文件里没有明文。
+      # 设了的话：以这个为准，网页上就不让你设了（适合批量/自动化部署）。
+      # HB_ADMIN_KEY: "换成你自己的口令"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5173/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

@@ -1,0 +1,28 @@
+# 作业小站 · docker compose
+#
+# 在 homework-board 目录里：
+#   docker compose -f deploy/docker-compose.yml up -d
+#   docker compose -f deploy/docker-compose.yml logs -f
+#
+# 数据落在 ./data（会自己创建），升级只重建容器，数据不丢。
+
+services:
+  homework-board:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: homework-board:latest
+    container_name: homework-board
+    restart: unless-stopped
+    ports:
+      # 左边是宿主机端口，想用 80 就改成 "80:5173"
+      - "5199:5173"
+    volumes:
+      - ../data:/data
+    environment:
+      DATA_DIR: /data
+      # 房间管理口令【可选】。不设就在网页上首次进「房间管理」时自己设一个，
+      # 服务器只存 scrypt 哈希；想用环境变量统一管就取消下面这行的注释。
+      # HB_ADMIN_KEY: change-me-please
+      # 想只让本机的 nginx 访问，就取消下面这行的注释
+      # HOST: 127.0.0.1

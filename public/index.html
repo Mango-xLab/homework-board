@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffb703">
+<meta name="description" content="一年级小朋友的作业与每日任务小站，家长在钉钉收到作业后一键同步，孩子在家自己看、自己打勾。">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>作业小站</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body class="big-font">
+
+<!-- 启动 / 首次进入 -->
+<div id="boot" class="boot">
+  <div class="boot-card">
+    <div class="boot-emoji">📚</div>
+    <h1>作业小站</h1>
+    <p id="boot-msg">正在打开…</p>
+    <div class="boot-actions" id="boot-actions"></div>
+  </div>
+</div>
+
+<!-- 服务器上的文件换了新的，而这一页还是旧的 -->
+<div id="updatebar" class="update-bar" hidden>
+  <span>🔄 有新版本了</span>
+  <button class="chip ok" id="btn-update">点我刷新</button>
+</div>
+
+<!-- 顶栏 -->
+<header id="topbar" class="topbar" hidden>
+  <div class="topbar-left">
+    <span class="topbar-emoji" id="top-emoji">📚</span>
+    <div class="topbar-title">
+      <strong id="top-title">作业小站</strong>
+      <small id="top-sub"></small>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <!--
+      同步状态：是个**状态标签**，不是按钮（所以没有底色/边框/投影，也不是 button）。
+      上一版做成跟「字号」一样的白底圆框，家里人总以为可以点。
+    -->
+    <span class="sync-chip" id="sync-dot" title="已同步"><i aria-hidden="true"></i><em id="sync-text">已同步</em></span>
+    <button class="icon-btn" id="btn-sound" title="朗读开关">🔊</button>
+    <button class="icon-btn" id="btn-font" title="字号">A+</button>
+    <!-- 版本号：点开看这次更新了什么。内容由 public/changelog.json 提供 -->
+    <button class="version-chip" id="btn-version" title="查看更新内容" hidden>v…</button>
+  </div>
+</header>
+
+<!-- 专注时间：整页倒计时（点了「开始专注」才出现） -->
+<div id="focusmask" class="focus-mask" hidden></div>
+
+<!-- 主内容 -->
+<!-- 外面这层是唯一的滚动容器：让「页面本身」不滚动，底栏才能真正钉死在最底下。
+     移动端浏览器地址栏收放时会改变可视视口高度，文档一旦能滚，
+     position:fixed 的底栏就会跟着页面上下漂。 -->
+<div id="scroller" class="scroller">
+  <main id="view" class="view" hidden></main>
+</div>
+
+<!-- 底部导航 -->
+<nav id="tabbar" class="tabbar" hidden>
+  <button class="tab" data-view="today"><span>📚</span><em>今天</em></button>
+  <button class="tab" data-view="stars"><span>⭐</span><em>小红花</em></button>
+  <button class="tab" data-view="week"><span>📈</span><em>这一周</em></button>
+  <button class="tab" data-view="parent"><span>👨‍👩‍👧</span><em>家长</em></button>
+</nav>
+
+<div id="modal-root"></div>
+<div id="rest" class="rest-mask" hidden></div>
+<div id="toast-root" class="toast-root"></div>
+<div id="confetti" class="confetti" aria-hidden="true"></div>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
